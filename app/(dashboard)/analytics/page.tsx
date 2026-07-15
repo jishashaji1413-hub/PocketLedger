@@ -23,98 +23,83 @@ export default function AnalyticsPage() {
   }, []);
 
   async function loadTransactions() {
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) {
-      router.push("/login");
-      return;
-    }
-
-    const user = JSON.parse(storedUser);
-
     try {
+      // Get logged-in user
+      const userRes = await fetch("/api/user");
+
+      if (!userRes.ok) {
+        router.push("/login");
+        return;
+      }
+
+      const user = await userRes.json();
+
+      // Get transactions
       const res = await fetch(
         `/api/transactions?userId=${user.id}`
       );
 
       const data = await res.json();
 
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+
       setTransactions(data);
     } catch (error) {
       console.error(error);
+      alert("Failed to load analytics.");
     } finally {
       setLoading(false);
     }
   }
 
-  
   // Income
-  
-
   const income = transactions
     .filter((t) => t.amount > 0)
     .reduce((sum, t) => sum + t.amount, 0);
 
-  
   // Expense
-  
-
   const expense = Math.abs(
     transactions
       .filter((t) => t.amount < 0)
       .reduce((sum, t) => sum + t.amount, 0)
   );
 
-  
   // Balance
-  
-
   const balance = income - expense;
 
-  
   // Total Transactions
- 
-
   const totalTransactions = transactions.length;
 
- 
   // Biggest Expense
-  
+  const biggestExpense = transactions
+    .filter((t) => t.amount < 0)
+    .sort((a, b) => a.amount - b.amount)[0];
 
-  const biggestExpense =
-    transactions
-      .filter((t) => t.amount < 0)
-      .sort((a, b) => a.amount - b.amount)[0];
-
-  
   // Biggest Income
-  
-  const biggestIncome =
-    transactions
-      .filter((t) => t.amount > 0)
-      .sort((a, b) => b.amount - a.amount)[0];
+  const biggestIncome = transactions
+    .filter((t) => t.amount > 0)
+    .sort((a, b) => b.amount - a.amount)[0];
 
-  
   // Average Expense
-  
-  const expenseTransactions =
-    transactions.filter((t) => t.amount < 0);
+  const expenseTransactions = transactions.filter(
+    (t) => t.amount < 0
+  );
 
   const averageExpense =
     expenseTransactions.length === 0
       ? 0
       : expense / expenseTransactions.length;
 
-  
-  
+  // Savings Rate
   const savingsRate =
     income === 0
       ? 0
       : ((balance / income) * 100).toFixed(1);
 
-  
   // Pie Chart Data
-  
   const categoryMap: {
     [key: string]: number;
   } = {};
@@ -135,13 +120,11 @@ export default function AnalyticsPage() {
   );
 
   // Monthly Chart Data
-  
-
   const monthMap: {
     [key: string]: number;
   } = {};
 
-  transactions 
+  transactions
     .filter((t) => t.amount < 0)
     .forEach((transaction) => {
       const month = new Date(
@@ -177,11 +160,7 @@ export default function AnalyticsPage() {
         Visualize your spending habits and income.
       </p>
 
-      {/* Summary */}
-
       <Summary transactions={transactions} />
-
-      {/* Charts */}
 
       <div className="grid lg:grid-cols-2 gap-8 mb-8">
 
@@ -204,8 +183,6 @@ export default function AnalyticsPage() {
 
       </div>
 
-      {/* Insights */}
-
       <div className="grid md:grid-cols-3 gap-6 mb-8">
 
         <InsightCard
@@ -221,9 +198,7 @@ export default function AnalyticsPage() {
           title="Biggest Expense"
           value={
             biggestExpense
-              ? `₹${Math.abs(
-                  biggestExpense.amount
-                ).toFixed(2)}`
+              ? `₹${Math.abs(biggestExpense.amount).toFixed(2)}`
               : "₹0"
           }
         />
@@ -249,8 +224,6 @@ export default function AnalyticsPage() {
         />
 
       </div>
-
-      {/* Category Table */}
 
       <CategoryTable
         data={pieData}

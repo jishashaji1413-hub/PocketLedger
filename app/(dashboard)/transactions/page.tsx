@@ -15,16 +15,18 @@ export default function TransactionsPage() {
   const [search, setSearch] = useState("");
 
   async function loadTransactions() {
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) {
-      router.push("/login");
-      return;
-    }
-
-    const user = JSON.parse(storedUser);
-
     try {
+      // Get logged-in user from JWT cookie
+      const userRes = await fetch("/api/user");
+
+      if (!userRes.ok) {
+        router.push("/login");
+        return;
+      }
+
+      const user = await userRes.json();
+
+      // Fetch this user's transactions
       const res = await fetch(
         `/api/transactions?userId=${user.id}`
       );
@@ -72,19 +74,27 @@ export default function TransactionsPage() {
     }
   }
 
-  // Search filter
-  const filteredTransactions = transactions.filter((transaction) => {
-    const searchText = search.toLowerCase();
+  // Search Filter
+  const filteredTransactions = transactions.filter(
+    (transaction) => {
+      const searchText = search.toLowerCase();
 
-    return (
-      transaction.description.toLowerCase().includes(searchText) ||
-      transaction.category.toLowerCase().includes(searchText) ||
-      transaction.amount.toString().includes(searchText) ||
-      new Date(transaction.date)
-        .toLocaleDateString()
-        .includes(searchText)
-    );
-  });
+      return (
+        transaction.description
+          .toLowerCase()
+          .includes(searchText) ||
+        transaction.category
+          .toLowerCase()
+          .includes(searchText) ||
+        transaction.amount
+          .toString()
+          .includes(searchText) ||
+        new Date(transaction.date)
+          .toLocaleDateString()
+          .includes(searchText)
+      );
+    }
+  );
 
   if (loading) {
     return <div className="p-8">Loading...</div>;
@@ -92,6 +102,7 @@ export default function TransactionsPage() {
 
   return (
     <div className="p-8 bg-gray-300 min-h-screen">
+
       <h1 className="text-3xl font-bold text-blue-400">
         TRANSACTIONS
       </h1>
@@ -101,17 +112,25 @@ export default function TransactionsPage() {
       </p>
 
       {/* Add Transaction */}
+
       <div className="bg-white rounded-xl shadow p-6 mb-8">
+
         <h2 className="text-xl font-semibold mb-4 text-blue-400">
           Add Transaction
         </h2>
 
-        <TransactionForm onAdd={loadTransactions} />
+        <TransactionForm
+          onAdd={loadTransactions}
+        />
+
       </div>
 
       {/* Transaction History */}
+
       <div className="bg-white rounded-xl shadow p-6">
+
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+
           <h2 className="text-xl font-semibold text-blue-400">
             Transaction History
           </h2>
@@ -120,6 +139,7 @@ export default function TransactionsPage() {
             search={search}
             setSearch={setSearch}
           />
+
         </div>
 
         <TransactionTable
@@ -127,7 +147,9 @@ export default function TransactionsPage() {
           onDelete={deleteTransaction}
           onUpdate={loadTransactions}
         />
+
       </div>
+
     </div>
   );
 }

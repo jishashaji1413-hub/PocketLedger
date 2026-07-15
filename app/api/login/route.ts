@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
+import {
+  createAccessToken,
+  createRefreshToken,
+} from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
@@ -39,7 +43,14 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({
+    const accessToken = await createAccessToken(
+      user.id
+    );
+
+    const refreshToken =
+      await createRefreshToken(user.id);
+
+    const response = NextResponse.json({
       success: true,
       message: "Login Successful",
       user: {
@@ -49,7 +60,36 @@ export async function POST(req: Request) {
       },
     });
 
-  } catch{
+    response.cookies.set(
+      "accessToken",
+      accessToken,
+      {
+        httpOnly: true,
+        secure:
+          process.env.NODE_ENV ===
+          "production",
+        sameSite: "lax",
+        maxAge: 60 * 15,
+        path: "/",
+      }
+    );
+
+    response.cookies.set(
+      "refreshToken",
+      refreshToken,
+      {
+        httpOnly: true,
+        secure:
+          process.env.NODE_ENV ===
+          "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      }
+    );
+
+    return response;
+  } catch {
     return NextResponse.json(
       {
         message: "Server Error",
