@@ -12,26 +12,28 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   async function loadTransactions() {
-    const storedUser = localStorage.getItem("user");
-
-    if (!storedUser) {
-      router.push("/login");
-      return;
-    }
-
-    const user = JSON.parse(storedUser);
-
     try {
-      const res = await fetch(
+      // Get logged-in user
+      const userRes = await fetch("/api/user");
+
+      if (!userRes.ok) {
+        router.push("/login");
+        return;
+      }
+
+      const user = await userRes.json();
+
+      // Fetch user's transactions
+      const transactionRes = await fetch(
         `/api/transactions?userId=${user.id}`,
         {
           cache: "no-store",
         }
       );
 
-      const data = await res.json();
+      const data = await transactionRes.json();
 
-      if (!res.ok) {
+      if (!transactionRes.ok) {
         alert(data.message);
         return;
       }

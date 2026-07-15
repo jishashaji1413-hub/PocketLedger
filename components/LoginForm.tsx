@@ -30,7 +30,7 @@ export default function LoginForm() {
       });
 
       const data = await res.json();
-console.log(data);
+
       if (!res.ok) {
         alert(data.message);
         return;
@@ -41,7 +41,7 @@ console.log(data);
         "user",
         JSON.stringify(data.user)
       );
-console.log(localStorage.getItem("user"));
+
       alert(data.message);
 
       setEmail("");

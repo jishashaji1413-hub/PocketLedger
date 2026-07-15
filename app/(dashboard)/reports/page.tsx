@@ -33,34 +33,44 @@ export default function ReportsPage() {
     loadTransactions();
   }, []);
 
-  async function loadTransactions() {
-    const storedUser = localStorage.getItem("user");
+async function loadTransactions() {
+  try {
+    // Get logged-in user from JWT cookie
+    const userRes = await fetch("/api/user");
 
-    if (!storedUser) {
+    if (!userRes.ok) {
       router.push("/login");
       return;
     }
 
-    const currentUser = JSON.parse(storedUser);
+    const currentUser = await userRes.json();
 
-     setUser(currentUser);
+    setUser(currentUser);
 
-    try {
-      const res = await fetch(
-        `/api/transactions?userId=${currentUser.id}`
-      );
+    // Load transactions
+    const transactionRes = await fetch(
+      `/api/transactions?userId=${currentUser.id}`,
+      {
+        cache: "no-store",
+      }
+    );
 
-      const data = await res.json();
+    const data = await transactionRes.json();
 
-      setTransactions(data);
-      setFilteredTransactions(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    if (!transactionRes.ok) {
+      alert(data.message);
+      return;
     }
-  }
 
+    setTransactions(data);
+    setFilteredTransactions(data);
+  } catch (error) {
+    console.error(error);
+    alert("Failed to load reports.");
+  } finally {
+    setLoading(false);
+  }
+}
   function generateReport() {
     if (!fromDate || !toDate) {
       alert("Please select both dates.");
@@ -136,7 +146,7 @@ doc.text(
   });
 
   doc.save(
-    `${user?.name}_PL_Report_${fromDate}_to_${toDate}.pdf` 
+  `${user?.name ?? "User"}_PL_Report_${fromDate}_to_${toDate}.pdf`
 );
 
 }
@@ -196,10 +206,10 @@ function downloadExcel() {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
 
-  saveAs(
-    blob,
-     `${user?.name}_PL_Report_${fromDate}_to_${toDate}.xlsx` 
-  );
+ saveAs(
+  blob,
+  `${user?.name ?? "User"}_PL_Report_${fromDate}_to_${toDate}.xlsx`
+);
 }
 const income = filteredTransactions
   .filter((t) => t.amount > 0)
