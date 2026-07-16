@@ -47,23 +47,22 @@ async function loadTransactions() {
 
     setUser(currentUser);
 
-    // Load transactions
-    const transactionRes = await fetch(
-      `/api/transactions?userId=${currentUser.id}`,
-      {
-        cache: "no-store",
-      }
-    );
+  const transactionRes = await fetch(
+  `/api/transactions?userId=${currentUser.id}&all=true`,
+  {
+    cache: "no-store",
+  }
+);
 
-    const data = await transactionRes.json();
+const data = await transactionRes.json();
 
-    if (!transactionRes.ok) {
-      alert(data.message);
-      return;
-    }
+if (!transactionRes.ok) {
+  alert(data.message);
+  return;
+}
 
-    setTransactions(data);
-    setFilteredTransactions(data);
+setTransactions(data.transactions);
+setFilteredTransactions(data.transactions);
   } catch (error) {
     console.error(error);
     alert("Failed to load reports.");
