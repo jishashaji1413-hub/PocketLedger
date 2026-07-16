@@ -36,17 +36,20 @@ export default function AnalyticsPage() {
 
       // Get transactions
       const res = await fetch(
-        `/api/transactions?userId=${user.id}`
-      );
+  `/api/transactions?userId=${user.id}&all=true`,
+  {
+    cache: "no-store",
+  }
+);
 
-      const data = await res.json();
+const data = await res.json();
 
-      if (!res.ok) {
-        alert(data.message);
-        return;
-      }
+if (!res.ok) {
+  alert(data.message);
+  return;
+}
 
-      setTransactions(data);
+setTransactions(data.transactions);
     } catch (error) {
       console.error(error);
       alert("Failed to load analytics.");

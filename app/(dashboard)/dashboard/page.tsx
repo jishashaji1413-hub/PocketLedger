@@ -23,22 +23,21 @@ export default function DashboardPage() {
 
       const user = await userRes.json();
 
-      // Fetch user's transactions
-      const transactionRes = await fetch(
-        `/api/transactions?userId=${user.id}`,
-        {
-          cache: "no-store",
-        }
-      );
+     const transactionRes = await fetch(
+  `/api/transactions?userId=${user.id}&all=true`,
+  {
+    cache: "no-store",
+  }
+);
 
-      const data = await transactionRes.json();
+const data = await transactionRes.json();
 
-      if (!transactionRes.ok) {
-        alert(data.message);
-        return;
-      }
+if (!transactionRes.ok) {
+  alert(data.message);
+  return;
+}
 
-      setTransactions(data);
+setTransactions(data.transactions);
     } catch (error) {
       console.error(error);
       alert("Failed to load dashboard.");
