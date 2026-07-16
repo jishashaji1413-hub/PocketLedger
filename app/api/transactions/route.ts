@@ -14,22 +14,93 @@ export async function GET(request: Request) {
       );
     }
 
-    const transactions = await prisma.transaction.findMany({
-      where: {
-        userId,
-      },
-      orderBy: {
-        date: "desc",
-      },
-    });
+    // Pagination
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 5;
+    const skip = (page - 1) * limit;
 
-    return NextResponse.json(transactions);
+    // Search
+    const search = searchParams.get("search") || "";
+
+    // Fetch all transactions?
+    const all = searchParams.get("all") === "true";
+
+    // Common WHERE clause
+    const where = {
+      userId,
+      ...(search && {
+        OR: [
+          {
+            description: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          },
+          {
+            category: {
+              contains: search,
+              mode: "insensitive" as const,
+            },
+          },
+        ],
+      }),
+    };
+
+    // ==========================
+    // Dashboard / Analytics / Reports
+    // ==========================
+    if (all) {
+      const transactions = await prisma.transaction.findMany({
+        where,
+        orderBy: {
+          date: "desc",
+        },
+      });
+
+      return NextResponse.json({
+        transactions,
+      });
+    }
+
+    // ==========================
+    // Transactions Page (Pagination)
+    // ==========================
+
+    const totalTransactions =
+      await prisma.transaction.count({
+        where,
+      });
+
+    const totalPages = Math.ceil(
+      totalTransactions / limit
+    );
+
+    const transactions =
+      await prisma.transaction.findMany({
+        where,
+        orderBy: {
+          date: "desc",
+        },
+        skip,
+        take: limit,
+      });
+
+    return NextResponse.json({
+      transactions,
+      currentPage: page,
+      totalPages,
+      totalTransactions,
+    });
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
-      { message: "Failed to fetch transactions." },
-      { status: 500 }
+      {
+        message: "Failed to fetch transactions.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
@@ -52,32 +123,45 @@ export async function POST(request: Request) {
       !userId
     ) {
       return NextResponse.json(
-        { message: "All fields are required." },
-        { status: 400 }
+        {
+          message: "All fields are required.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const transaction = await prisma.transaction.create({
-      data: {
-        description,
-        amount,
-        category,
-        userId,
-      },
-    });
+    const transaction =
+      await prisma.transaction.create({
+        data: {
+          description,
+          amount,
+          category,
+          userId,
+        },
+      });
 
-    return NextResponse.json(transaction, {
-      status: 201,
-    });
+    return NextResponse.json(
+      transaction,
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
-      { message: "Something went wrong." },
-      { status: 500 }
+      {
+        message: "Something went wrong.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
+
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
@@ -91,8 +175,12 @@ export async function PUT(request: Request) {
 
     if (!id) {
       return NextResponse.json(
-        { message: "Transaction ID is required." },
-        { status: 400 }
+        {
+          message: "Transaction ID is required.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -108,13 +196,16 @@ export async function PUT(request: Request) {
         },
       });
 
-    return NextResponse.json(updatedTransaction);
+    return NextResponse.json(
+      updatedTransaction
+    );
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
       {
-        message: "Failed to update transaction.",
+        message:
+          "Failed to update transaction.",
       },
       {
         status: 500,
@@ -125,14 +216,21 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } =
+      new URL(request.url);
 
-    const id = searchParams.get("id");
+    const id =
+      searchParams.get("id");
 
     if (!id) {
       return NextResponse.json(
-        { message: "Transaction ID is required." },
-        { status: 400 }
+        {
+          message:
+            "Transaction ID is required.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -143,14 +241,20 @@ export async function DELETE(request: Request) {
     });
 
     return NextResponse.json({
-      message: "Transaction deleted successfully.",
+      message:
+        "Transaction deleted successfully.",
     });
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
-      { message: "Failed to delete transaction." },
-      { status: 500 }
+      {
+        message:
+          "Failed to delete transaction.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
