@@ -132,8 +132,6 @@ if (loading && transactions.length === 0) {
           transactions={transactions}
           onDelete={deleteTransaction}
           onUpdate={loadTransactions}
-          page={page}
-          limit={LIMIT}
         />
 
         {/* Pagination */}

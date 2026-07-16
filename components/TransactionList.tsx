@@ -8,16 +8,12 @@ type Props = {
   transactions: Transaction[];
   onDelete: (id: string) => void;
   onUpdate: () => Promise<void>;
-  page: number;
-  limit: number;
 };
 
 export default function TransactionTable({
   transactions,
   onDelete,
   onUpdate,
-  page,
-  limit,
 }: Props) {
   const [editingId, setEditingId] = useState("");
 

@@ -18,9 +18,7 @@ export default function AnalyticsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadTransactions();
-  }, []);
+
 
   async function loadTransactions() {
     try {
@@ -57,6 +55,9 @@ setTransactions(data.transactions);
       setLoading(false);
     }
   }
+    useEffect(() => {
+    loadTransactions();
+  }, []);
 
   // Income
   const income = transactions
