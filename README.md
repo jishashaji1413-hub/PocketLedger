@@ -381,42 +381,42 @@ Analytics page provides:
 
 ### Home Page
 
-![HomePage](screenshots/homepage.png)
+![HomePage](screenshots/Homepage.png)
 
 ---
 ### Login Page
 
-![Login](screenshots/login.png)
+![Login](screenshots/Login.png)
 
 ---
 
 ### SignUp Page
 
-![Signup](screenshots/signup.png)
+![Signup](screenshots/SignUp.png)
 
 ---
 
 ### Dashboard
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/Dashboard.png)
 
 ---
 
 ### Transactions
 
-![Transactions](screenshots/transactions.png)
+![Transactions](screenshots/Transactions.png)
 
 ---
 
 ### Analytics
 
-![Analytics](screenshots/analytics.png)
+![Analytics](screenshots/Analytics.png)
 
 ---
 
 ### Reports
 
-![Reports](screenshots/report.png)
+![Reports](screenshots/Report.png)
 ---
 
 # 🚀 Future Enhancements
