@@ -445,7 +445,7 @@ This project is deployed using **Vercel**.
 
 # 🌐 Live Demo
 
-https://pocketledgerr-three.vercel.app
+https://pocket-ledger-flax.vercel.app
 
 The production database is hosted on **Neon PostgreSQL**.
 
