@@ -1,8 +1,8 @@
 # 💰 PocketLedger
 
-A modern **Personal Finance Tracker** built with **Next.js**, **TypeScript**, **Prisma**, and **PostgreSQL** that helps users securely manage their daily income and expenses.
+A modern Personal Finance Tracker built with **Next.js**, **TypeScript**, **Prisma ORM**, and **Neon PostgreSQL**.
 
-PocketLedger allows authenticated users to record transactions, visualize financial insights, generate downloadable reports, and monitor their financial health through an intuitive dashboard.
+PocketLedger allows authenticated users to securely manage their income and expenses, visualize analytics, generate reports, and monitor their financial health through an intuitive and fully responsive interface.
 
 ---
 
@@ -89,6 +89,17 @@ Report contains:
 
 ---
 
+## 📱 Responsive Design
+
+- Mobile-friendly interface
+- Tablet support
+- Desktop optimized layout
+- Responsive Sidebar with Hamburger Menu
+- Responsive Charts
+- Responsive Tables with Horizontal Scroll
+
+---
+
 # 🛠 Tech Stack
 
 ### Frontend
@@ -100,9 +111,10 @@ Report contains:
 
 ### Backend
 
+
 - Next.js Route Handlers
 - Prisma ORM
-- PostgreSQL
+- Neon PostgreSQL
 
 ### Authentication
 
@@ -125,7 +137,7 @@ Report contains:
 Install the following before running the project:
 
 - Node.js (v18 or later)
-- PostgreSQL
+- Neon Account (Free)
 - Git
 - npm
 
@@ -154,32 +166,7 @@ cd PocketLedger
 # Install project dependencies
 npm install
 
-# Prisma ORM
-npm install prisma @prisma/client
 
-# Prisma CLI (Development)
-npm install -D prisma
-
-# Password Hashing
-npm install bcryptjs
-
-# JWT Authentication
-npm install jsonwebtoken
-
-# Cookie Management
-npm install cookie
-
-# Icons
-npm install lucide-react
-
-# Charts
-npm install recharts
-
-# PDF Generation
-npm install jspdf jspdf-autotable
-
-# Excel Generation
-npm install xlsx file-saver
 
 ---
 
@@ -194,11 +181,14 @@ Create a file named
 Add the following:
 
 ```env
-DATABASE_URL="postgresql://username:password@localhost:5432/db_name"
+DATABASE_URL="your-neon-database-url"
 
-JWT_SECRET="your-secret-key" 
+JWT_SECRET="your-secret-key"
 ```
+Create a free database at
 
+https://neon.tech
+```
 Generate your own JWT Secret using:
 
 ```bash
@@ -217,8 +207,9 @@ npx prisma generate
 
 Run Migrations
 
-```bash
-npx prisma migrate dev
+```
+Create a PostgreSQL database on Neon and copy the connection string into the .env file.
+
 ```
 
 Open Prisma Studio
@@ -368,12 +359,12 @@ Analytics page provides:
 
 # 🔒 Security Features
 
-- Password Hashing (bcrypt)
 - JWT Authentication
 - HTTP-only Cookies
-- Protected Routes
-- User-specific Transactions
-- Prisma ORM against SQL Injection
+- Password Hashing using bcrypt
+- Prisma ORM (SQL Injection Protection)
+- Protected API Routes
+- User-specific Data Isolation
 
 ---
 
@@ -423,20 +414,16 @@ Analytics page provides:
 
 Planned improvements include:
 
-- Email Verification during Registration
-- Forgot Password functionality
-- Password Reset via Email
-- Email Validation using OTP
-- Refresh Token Authentication
-- User Profile Management
-- Export Analytics Charts
 - Dark Mode
-- Monthly Budget Planner
+- Budget Planning
 - Savings Goals
-- Expense Categories with Icons
-- Multi-Currency Support
-- Notifications & Reminders
-- Responsive Mobile Optimization
+- Email Verification
+- Forgot Password
+- Password Reset
+- Profile Management
+- Multi Currency Support
+- Notifications
+- Data Backup
 
 ---
 
@@ -449,6 +436,18 @@ GitHub:
 https://github.com/jishashaji1413-hub
 
 
+
+---
+
+## 🚀 Deployment
+
+This project is deployed using **Vercel**.
+
+# 🌐 Live Demo
+
+https://pocketledgerr-three.vercel.app
+
+The production database is hosted on **Neon PostgreSQL**.
 
 ---
 
