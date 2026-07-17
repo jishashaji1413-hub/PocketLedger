@@ -36,161 +36,309 @@ export default function TransactionTable({
     });
 
     setEditingId("");
-
     await onUpdate();
   }
 
   if (!transactions.length) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-10 text-gray-500">
         No transactions found.
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border bg-white">
-      <table className="w-full border-black">
-        <thead className="bg-gray-200 border-black">
-          <tr className="text-black">
-            
-            <th className="p-4 text-left ">Category</th>
-            <th className="p-4 text-left">Date</th>
-            <th className="p-4 text-left ">Description</th>
-            <th className="p-4 text-left">Amount</th>
-            <th className="p-4 text-center">Actions</th>
-          </tr>
-        </thead>
+    <>
+      {/* ================= MOBILE VIEW ================= */}
 
-        <tbody>
-          {transactions.map((transaction) => (
-            <tr key={transaction.id} className="border-t ">
-             
+      <div className="space-y-4 md:hidden">
+        {transactions.map((transaction) => (
+          <div
+            key={transaction.id}
+            className="rounded-xl bg-white shadow border p-4"
+          >
+            <div className="space-y-3">
 
-              <td className="p-4 text-black">
+              <div>
+                <p className="text-xs text-gray-500">Category</p>
+
                 {editingId === transaction.id ? (
                   <input
-                    className="border p-2 rounded w-full text-black"
+                    className="border rounded-lg p-2 w-full text-black"
                     value={category}
-                    onChange={(e) =>
-                      setCategory(e.target.value)
-                    }
+                    onChange={(e) => setCategory(e.target.value)}
                   />
                 ) : (
-                  transaction.category
+                  <p className="font-semibold text-black">
+                    {transaction.category}
+                  </p>
                 )}
-              </td>
+              </div>
 
-              <td className="p-4 text-black">
-                {new Date(
-                  transaction.date
-                ).toLocaleDateString()}
-              </td>
-               <td className="p-4 text-black">
+              <div>
+                <p className="text-xs text-gray-500">Description</p>
+
                 {editingId === transaction.id ? (
                   <input
-                    className="border p-2 rounded w-full text-black"
+                    className="border rounded-lg p-2 w-full text-black"
                     value={description}
-                    onChange={(e) =>
-                      setDescription(e.target.value)
-                    }
+                    onChange={(e) => setDescription(e.target.value)}
                   />
                 ) : (
-                  transaction.description
+                  <p className="text-black">
+                    {transaction.description}
+                  </p>
                 )}
-              </td>
+              </div>
 
-              <td className="p-4 text-black">
+              <div>
+                <p className="text-xs text-gray-500">Date</p>
+
+                <p className="text-black">
+                  {new Date(transaction.date).toLocaleDateString()}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs text-gray-500">Amount</p>
+
                 {editingId === transaction.id ? (
                   <input
                     type="number"
-                    className="border p-2 rounded w-full text-black"
+                    className="border rounded-lg p-2 w-full text-black"
                     value={amount}
                     onChange={(e) =>
                       setAmount(Number(e.target.value))
                     }
                   />
                 ) : (
-                  <>
+                  <p
+                    className={`font-bold ${
+                      transaction.amount > 0
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
                     {transaction.amount > 0 ? "+" : "-"}₹
                     {Math.abs(transaction.amount).toFixed(2)}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 pt-2">
+
+                {editingId === transaction.id ? (
+                  <>
+                    <button
+                      onClick={() =>
+                        saveChanges(transaction.id)
+                      }
+                      className="p-2 rounded bg-green-100"
+                    >
+                      <Save
+                        size={18}
+                        className="text-green-700"
+                      />
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        setEditingId("")
+                      }
+                      className="p-2 rounded bg-gray-100"
+                    >
+                      <X size={18} />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingId(transaction.id);
+                        setDescription(
+                          transaction.description
+                        );
+                        setCategory(transaction.category);
+                        setAmount(transaction.amount);
+                      }}
+                      className="p-2 rounded bg-blue-100"
+                    >
+                      <Pencil
+                        size={18}
+                        className="text-blue-700"
+                      />
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        onDelete(transaction.id)
+                      }
+                      className="p-2 rounded bg-red-100"
+                    >
+                      <Trash2
+                        size={18}
+                        className="text-red-700"
+                      />
+                    </button>
                   </>
                 )}
-              </td>
 
-              <td className="p-4 text-black">
-                <div className="flex justify-center gap-3">
+              </div>
 
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ================= DESKTOP TABLE ================= */}
+
+      <div className="hidden md:block overflow-x-auto rounded-xl border bg-white shadow">
+        <table className="min-w-full">
+          <thead className="bg-gray-100">
+            <tr className="text-left text-gray-700">
+              <th className="px-6 py-4">Category</th>
+              <th className="px-6 py-4">Date</th>
+              <th className="px-6 py-4">Description</th>
+              <th className="px-6 py-4">Amount</th>
+              <th className="px-6 py-4 text-center">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {transactions.map((transaction) => (
+              <tr
+                key={transaction.id}
+                className="border-t hover:bg-gray-50"
+              >
+                <td className="px-6 py-4 text-black">
                   {editingId === transaction.id ? (
-                    <>
-                      <button
-                        onClick={() =>
-                          saveChanges(transaction.id)
-                        }
-                      >
-                        <Save
-                          size={18}
-                          className="text-green-600"
-                        />
-                      </button>
+                    <input
+                      className="border rounded-lg p-2 w-full"
+                      value={category}
+                      onChange={(e) =>
+                        setCategory(e.target.value)
+                      }
+                    />
+                  ) : (
+                    transaction.category
+                  )}
+                </td>
 
-                      <button
-                        onClick={() =>
-                          setEditingId("")
-                        }
-                      >
-                        <X
-                          size={18}
-                          className="text-black "
-                        />
-                      </button>
-                    </>
+                <td className="px-6 py-4 text-black">
+                  {new Date(
+                    transaction.date
+                  ).toLocaleDateString()}
+                </td>
+
+                <td className="px-6 py-4 text-black">
+                  {editingId === transaction.id ? (
+                    <input
+                      className="border rounded-lg p-2 w-full"
+                      value={description}
+                      onChange={(e) =>
+                        setDescription(e.target.value)
+                      }
+                    />
+                  ) : (
+                    transaction.description
+                  )}
+                </td>
+
+                <td
+                  className={`px-6 py-4 font-semibold ${
+                    transaction.amount > 0
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {editingId === transaction.id ? (
+                    <input
+                      type="number"
+                      className="border rounded-lg p-2 w-full text-black"
+                      value={amount}
+                      onChange={(e) =>
+                        setAmount(Number(e.target.value))
+                      }
+                    />
                   ) : (
                     <>
-                      <button
-                        onClick={() => {
-                          setEditingId(
-                            transaction.id
-                          );
-
-                          setDescription(
-                            transaction.description
-                          );
-
-                          setCategory(
-                            transaction.category
-                          );
-
-                          setAmount(
-                            transaction.amount
-                          );
-                        }}
-                      >
-                        <Pencil
-                          size={18}
-                          className="text-blue-600"
-                        />
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          onDelete(transaction.id)
-                        }
-                      >
-                        <Trash2
-                          size={18}
-                          className="text-red-600"
-                        />
-                      </button>
+                      {transaction.amount > 0 ? "+" : "-"}₹
+                      {Math.abs(transaction.amount).toFixed(2)}
                     </>
                   )}
+                </td>
 
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+                <td className="px-6 py-4">
+                  <div className="flex justify-center gap-3">
+
+                    {editingId === transaction.id ? (
+                      <>
+                        <button
+                          onClick={() =>
+                            saveChanges(transaction.id)
+                          }
+                        >
+                          <Save
+                            size={18}
+                            className="text-green-600"
+                          />
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            setEditingId("")
+                          }
+                        >
+                          <X
+                            size={18}
+                            className="text-gray-700"
+                          />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            setEditingId(
+                              transaction.id
+                            );
+                            setDescription(
+                              transaction.description
+                            );
+                            setCategory(
+                              transaction.category
+                            );
+                            setAmount(
+                              transaction.amount
+                            );
+                          }}
+                        >
+                          <Pencil
+                            size={18}
+                            className="text-blue-600"
+                          />
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            onDelete(transaction.id)
+                          }
+                        >
+                          <Trash2
+                            size={18}
+                            className="text-red-600"
+                          />
+                        </button>
+                      </>
+                    )}
+
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

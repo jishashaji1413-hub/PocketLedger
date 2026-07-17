@@ -43,13 +43,11 @@ export default function SignupForm() {
 
       if (!res.ok) {
         alert(data.message);
-        setLoading(false);
         return;
       }
 
       alert("Account created successfully!");
 
-      // Clear form
       setForm({
         name: "",
         email: "",
@@ -57,7 +55,6 @@ export default function SignupForm() {
         confirmPassword: "",
       });
 
-      // Redirect to Dashboard
       router.push("/dashboard");
     } catch (error) {
       console.error(error);
@@ -68,24 +65,32 @@ export default function SignupForm() {
   }
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-      <h1 className="text-3xl font-bold text-center text-green-600">
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+
+      <h1 className="text-2xl sm:text-3xl font-bold text-center text-green-600">
         Create Account
       </h1>
 
-      <p className="text-gray-500 text-center mt-2">
+      <p className="text-gray-500 text-center mt-2 text-sm sm:text-base">
         Join PocketLedger
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-5 mt-8">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 sm:space-y-5 mt-6 sm:mt-8"
+      >
+
         <input
           type="text"
           placeholder="Full Name"
           required
-          className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
           value={form.name}
           onChange={(e) =>
-            setForm({ ...form, name: e.target.value })
+            setForm({
+              ...form,
+              name: e.target.value,
+            })
           }
         />
 
@@ -93,10 +98,13 @@ export default function SignupForm() {
           type="email"
           placeholder="Email"
           required
-          className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
           value={form.email}
           onChange={(e) =>
-            setForm({ ...form, email: e.target.value })
+            setForm({
+              ...form,
+              email: e.target.value,
+            })
           }
         />
 
@@ -105,10 +113,13 @@ export default function SignupForm() {
           placeholder="Password"
           required
           minLength={8}
-          className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
           value={form.password}
           onChange={(e) =>
-            setForm({ ...form, password: e.target.value })
+            setForm({
+              ...form,
+              password: e.target.value,
+            })
           }
         />
 
@@ -116,7 +127,7 @@ export default function SignupForm() {
           type="password"
           placeholder="Confirm Password"
           required
-          className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-green-500 text-black"
+          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
           value={form.confirmPassword}
           onChange={(e) =>
             setForm({
@@ -129,21 +140,25 @@ export default function SignupForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-green-600 text-white rounded-lg py-3 hover:bg-green-700 disabled:bg-gray-400"
+          className="w-full rounded-lg bg-green-600 py-3 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-400"
         >
-          {loading ? "Creating Account..." : "Create Account"}
+          {loading
+            ? "Creating Account..."
+            : "Create Account"}
         </button>
+
       </form>
 
-      <p className="text-center mt-6 text-gray-500">
+      <p className="mt-6 text-center text-sm sm:text-base text-gray-500">
         Already have an account?{" "}
         <Link
           href="/login"
-          className="text-green-600 font-semibold hover:underline"
+          className="font-semibold text-green-600 hover:underline"
         >
           Login
         </Link>
       </p>
+
     </div>
   );
 }

@@ -98,16 +98,18 @@ export default function TransactionForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="border rounded-lg p-4 space-y-4"
+      className="border rounded-xl bg-white p-4 sm:p-6 space-y-5"
     >
-      <div className="flex gap-3">
+      {/* Income / Expense */}
+
+      <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
           onClick={() => setType("expense")}
-          className={`px-4 py-2 rounded ${
+          className={`py-3 rounded-lg font-medium transition ${
             type === "expense"
               ? "bg-red-500 text-white"
-              : "bg-gray-200"
+              : "bg-gray-200 hover:bg-gray-300"
           }`}
         >
           Expense
@@ -116,51 +118,59 @@ export default function TransactionForm({
         <button
           type="button"
           onClick={() => setType("income")}
-          className={`px-4 py-2 rounded ${
+          className={`py-3 rounded-lg font-medium transition ${
             type === "income"
               ? "bg-green-500 text-white"
-              : "bg-gray-200"
+              : "bg-gray-200 hover:bg-gray-300"
           }`}
         >
           Income
         </button>
       </div>
 
-      <input
-        type="text"
-        required
-        placeholder="Description"
-        className="border rounded w-full p-2 text-black"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
+      {/* Form Fields */}
 
-      <input
-        type="number"
-        required
-        min="1"
-        placeholder="Amount"
-        className="border rounded w-full p-2 text-black"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-      <select
-        className="border rounded w-full p-2 text-black"
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-      >
-        {CATEGORIES.map((item) => (
-          <option key={item} value={item}>
-            {item}
-          </option>
-        ))}
-      </select>
+        <input
+          type="text"
+          required
+          placeholder="Description"
+          className="border rounded-lg p-3 text-black focus:ring-2 focus:ring-blue-500 outline-none"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+
+        <input
+          type="number"
+          required
+          min="1"
+          placeholder="Amount"
+          className="border rounded-lg p-3 text-black focus:ring-2 focus:ring-blue-500 outline-none"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+
+        <select
+          className="border rounded-lg p-3 text-black focus:ring-2 focus:ring-blue-500 outline-none"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        >
+          {CATEGORIES.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+
+      </div>
+
+      {/* Submit */}
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded bg-blue-600 py-2 text-white hover:bg-blue-700 disabled:bg-gray-400"
+        className="w-full rounded-lg bg-blue-600 py-3 text-white font-semibold hover:bg-blue-700 transition disabled:bg-gray-400"
       >
         {loading ? "Adding..." : "Add Transaction"}
       </button>

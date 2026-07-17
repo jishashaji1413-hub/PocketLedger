@@ -7,6 +7,7 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  CartesianGrid,
 } from "recharts";
 
 export default function IncomeExpenseChart({
@@ -27,23 +28,65 @@ export default function IncomeExpenseChart({
     },
   ];
 
+  const hasData = income > 0 || expense > 0;
+
   return (
-    <div className="bg-white rounded-xl shadow p-6 h-[400px]">
-      <h2 className="text-xl font-semibold mb-6 text-blue-400">
+    <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 h-[320px] sm:h-[420px]">
+      <h2 className="text-lg sm:text-xl font-semibold text-blue-500 mb-4">
         Income vs Expense
       </h2>
 
-      <ResponsiveContainer width="100%" height="90%">
-        <BarChart data={data}>
-          <XAxis dataKey="name" />
+      {!hasData ? (
+        <div className="flex items-center justify-center h-[240px] sm:h-[320px]">
+          <p className="text-gray-500">
+            No transaction data available.
+          </p>
+        </div>
+      ) : (
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={data}
+            margin={{
+              top: 10,
+              right: 20,
+              left: 0,
+              bottom: 10,
+            }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+            />
 
-          <YAxis />
+            <XAxis
+              dataKey="name"
+              tick={{
+                fontSize: 13,
+              }}
+            />
 
-          <Tooltip />
+            <YAxis
+              tick={{
+                fontSize: 13,
+              }}
+            />
 
-          <Bar dataKey="value" fill="#6d8af5" />
-        </BarChart>
-      </ResponsiveContainer>
+           <Tooltip
+  formatter={(value) => [
+    `₹${Number(value).toFixed(2)}`,
+    "Amount",
+  ]}
+/>
+
+            <Bar
+              dataKey="value"
+              fill="#3B82F6"
+              radius={[8, 8, 0, 0]}
+              maxBarSize={70}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 }

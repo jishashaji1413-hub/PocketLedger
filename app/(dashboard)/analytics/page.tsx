@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Transaction } from "@/types/transaction";
@@ -20,7 +20,7 @@ export default function AnalyticsPage() {
 
 
 
-  async function loadTransactions() {
+ const loadTransactions = useCallback(async () => {
     try {
       // Get logged-in user
       const userRes = await fetch("/api/user");
@@ -54,10 +54,10 @@ setTransactions(data.transactions);
     } finally {
       setLoading(false);
     }
-  }
-    useEffect(() => {
-    loadTransactions();
-  }, []);
+  },[router]);
+ useEffect(() => {
+  loadTransactions();
+}, [loadTransactions]);
 
   // Income
   const income = transactions
@@ -149,24 +149,30 @@ setTransactions(data.transactions);
     })
   );
 
-  if (loading) {
-    return <div className="p-8">Loading...</div>;
-  }
+if (loading) {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <h2 className="text-xl font-semibold text-gray-700">
+        Loading Analytics...
+      </h2>
+    </div>
+  );
+}
 
   return (
-    <div className="p-8 bg-gray-300 min-h-screen">
+   <div className="min-h-screen bg-gray-300 p-4 sm:p-6 md:p-8">
 
-      <h1 className="text-3xl font-bold text-blue-400">
+     <h1 className="text-2xl sm:text-3xl font-bold text-blue-500">
         ANALYTICS
       </h1>
 
-      <p className="text-gray-500 mb-8">
+     <p className="text-gray-600 mt-2 mb-6 sm:mb-8 text-sm sm:text-base">
         Visualize your spending habits and income.
       </p>
 
       <Summary transactions={transactions} />
 
-      <div className="grid lg:grid-cols-2 gap-8 mb-8">
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 
         <PieChartCard
           data={pieData}
@@ -179,7 +185,7 @@ setTransactions(data.transactions);
 
       </div>
 
-      <div className="mb-8">
+      <div className="mb-6">
 
         <MonthlyChart
           data={monthlyData}
@@ -187,8 +193,7 @@ setTransactions(data.transactions);
 
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
-
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mb-6">
         <InsightCard
           title="Biggest Income"
           value={
@@ -229,9 +234,9 @@ setTransactions(data.transactions);
 
       </div>
 
-      <CategoryTable
-        data={pieData}
-      />
+    <div className="bg-white rounded-xl shadow p-4 sm:p-6">
+  <CategoryTable data={pieData} />
+</div>
 
     </div>
   );

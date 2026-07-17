@@ -229,140 +229,132 @@ const totalTransactions = filteredTransactions.length;
   
 
   return (
-    <div className="p-8 bg-gray-300 min-h-screen">
+  <div className="p-4 sm:p-6 lg:p-8 bg-gray-300 min-h-screen">
 
-      <h1 className="text-3xl font-bold text-blue-400">
-        REPORTS
-      </h1>
+    <h1 className="text-2xl sm:text-3xl font-bold text-blue-500">
+      REPORTS
+    </h1>
 
-      <p className="text-gray-500 mb-8">
-        Generate financial reports.
-      </p>
-<div className="bg-white rounded-xl shadow p-6 mb-8">
+    <p className="text-gray-500 mb-6 sm:mb-8">
+      Generate financial reports.
+    </p>
 
-  <h2 className="text-xl font-semibold mb-4 text-blue-400">
-    User Details
-  </h2>
+    {/* User Details */}
 
-  <div className="grid md:grid-cols-2 gap-6 text-black">
+    <div className="bg-white rounded-xl shadow p-4 sm:p-6 mb-6 sm:mb-8">
 
-    <div>
-      <p className="text-gray-500">
-        Name
-      </p>
+      <h2 className="text-lg sm:text-xl font-semibold mb-4 text-blue-400">
+        User Details
+      </h2>
 
-      <p className="font-semibold text-lg">
-        {user?.name}
-      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-black">
+
+        <div>
+          <p className="text-gray-500 text-sm">Name</p>
+          <p className="font-semibold text-base sm:text-lg break-words">
+            {user?.name}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-gray-500 text-sm">Email</p>
+          <p className="font-semibold text-base sm:text-lg break-all">
+            {user?.email}
+          </p>
+        </div>
+
+      </div>
+
     </div>
 
-    <div>
-      <p className="text-gray-500">
-        Email
-      </p>
+    {/* Filters */}
 
-      <p className="font-semibold text-lg">
-        {user?.email}
-      </p>
+    <div className="bg-white rounded-xl shadow p-4 sm:p-6 mb-6 sm:mb-8">
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-black">
+
+        <div>
+          <label className="block mb-2 font-semibold">
+            From Date
+          </label>
+
+          <input
+            type="date"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            className="border rounded-lg p-3 w-full"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 font-semibold">
+            To Date
+          </label>
+
+          <input
+            type="date"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            className="border rounded-lg p-3 w-full"
+          />
+        </div>
+
+        <div className="flex items-end">
+          <button
+            onClick={generateReport}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition"
+          >
+            Generate Report
+          </button>
+        </div>
+
+      </div>
+
     </div>
 
-  </div>
+    <ReportSummary
+      income={income}
+      expense={expense}
+      balance={balance}
+      totalTransactions={totalTransactions}
+    />
 
-</div>
-      <div className="bg-white rounded-xl shadow p-6 mb-8">
+    {/* Transactions */}
 
-        <div className="grid md:grid-cols-3 gap-6 text-black">
+    <div className="bg-white rounded-xl shadow p-4 sm:p-6 mt-6 sm:mt-8">
 
-          <div>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
 
-            <label className="block mb-2 font-semibold">
-              From Date
-            </label>
+        <h2 className="text-xl sm:text-2xl font-semibold text-blue-400">
+          Transactions
+        </h2>
 
-            <input
-              type="date"
-              value={fromDate}
-              onChange={(e) =>
-                setFromDate(e.target.value)
-              }
-              className="border rounded-lg p-3 w-full"
-            />
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
 
-          </div>
+          <button
+            onClick={downloadExcel}
+            className="w-full sm:w-auto bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-lg transition"
+          >
+            Download Excel
+          </button>
 
-          <div>
-
-            <label className="block mb-2 font-semibold">
-              To Date
-            </label>
-
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) =>
-                setToDate(e.target.value)
-              }
-              className="border rounded-lg p-3 w-full"
-            />
-
-          </div>
-
-          <div className="flex items-end">
-
-            <button
-              onClick={generateReport}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg w-full"
-            >
-              Generate Report
-            </button>
-
-          </div>
+          <button
+            onClick={downloadPDF}
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition"
+          >
+            Download PDF
+          </button>
 
         </div>
 
       </div>
 
-      <ReportSummary
-  income={income}
-  expense={expense}
-  balance={balance}
-  totalTransactions={totalTransactions}
-/>
-
-<div className="bg-white rounded-xl shadow p-6 mt-8">
-
-  <div className="flex justify-between items-center mb-6">
-
-    <h2 className="text-2xl font-semibold text-blue-400">
-      Transactions
-    </h2>
-
-    <div className="flex gap-4">
-
-      <button
-        onClick={downloadExcel}
-        className="bg-green-700 hover:bg-green-800 text-white px-5 py-2 rounded-lg"
-      >
-        Download Excel
-      </button>
-
-      <button
-        onClick={downloadPDF}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
-      >
-        Download PDF
-      </button>
+      <ReportTable
+        transactions={filteredTransactions}
+      />
 
     </div>
 
   </div>
-
-  <ReportTable
-  transactions={filteredTransactions}
-/>
-
-</div>
-
-</div>
 );
 }

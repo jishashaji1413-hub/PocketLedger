@@ -15,11 +15,8 @@ export default function Navbar() {
 
   const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  async function loadUser() {
+  // Declare this BEFORE useEffect
+  const loadUser = async () => {
     try {
       const res = await fetch("/api/user", {
         cache: "no-store",
@@ -31,63 +28,73 @@ export default function Navbar() {
       }
 
       const data = await res.json();
-
       setUser(data);
     } catch (error) {
       console.error(error);
       router.replace("/login");
     }
-  }
+  };
 
-  async function handleLogout() {
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const handleLogout = async () => {
     try {
       await fetch("/api/logout", {
         method: "POST",
       });
 
       setUser(null);
-
       router.replace("/login");
     } catch (error) {
       console.error(error);
       alert("Logout failed.");
     }
-  }
+  };
 
   return (
-    <header className="bg-white border-b h-16 flex items-center justify-between px-8">
+    <header className="hidden md:flex bg-white border-b h-16 items-center justify-between px-4 md:px-8 shadow-sm">
 
-      <div></div>
+      {/* Left */}
+      <div className="text-lg md:text-xl font-semibold text-slate-700">
+        Welcome 👋
+      </div>
 
-      <div className="flex items-center gap-6">
+      {/* Right */}
+      <div className="flex items-center gap-3 md:gap-6">
 
-        <div className="flex items-center gap-3">
+        {/* User */}
+        <div className="flex items-center gap-2">
 
           <UserCircle
-            size={40}
+            size={36}
             className="text-green-600"
           />
 
+          {/* Username visible on all devices */}
           <div>
-
-            <p className="font-semibold text-gray-800">
+            <p className="font-semibold text-gray-800 text-sm md:text-base">
               {user?.name ?? "Guest"}
             </p>
 
-            {/* <p className="text-sm text-gray-500">
-              {user?.email ?? ""}
+            {/* Uncomment if you also want email */}
+            {/* <p className="text-xs text-gray-500 break-all">
+              {user?.email}
             </p> */}
-
           </div>
 
         </div>
 
+        {/* Logout */}
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-3 md:px-4 py-2 rounded-lg transition"
         >
           <LogOut size={18} />
-          Logout
+          <span className="hidden lg:inline">
+            Logout
+          </span>
         </button>
 
       </div>

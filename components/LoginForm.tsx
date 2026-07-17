@@ -36,7 +36,6 @@ export default function LoginForm() {
         return;
       }
 
-      //  Save logged-in user
       localStorage.setItem(
         "user",
         JSON.stringify(data.user)
@@ -57,59 +56,59 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-      <h1 className="text-3xl font-bold text-center text-green-600">
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+
+      <h1 className="text-2xl sm:text-3xl font-bold text-center text-green-600">
         Welcome Back
       </h1>
 
-      <p className="text-gray-500 text-center mt-2">
+      <p className="mt-2 text-center text-sm sm:text-base text-gray-500">
         Login to PocketLedger
       </p>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-5 mt-8"
+        className="mt-6 sm:mt-8 space-y-4 sm:space-y-5"
       >
+
         <input
           type="email"
           placeholder="Email"
           required
-          className="w-full border rounded-lg p-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
           value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
         />
 
         <input
           type="password"
           placeholder="Password"
           required
-          className="w-full border rounded-lg p-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full rounded-lg border p-3 text-black focus:outline-none focus:ring-2 focus:ring-green-500"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-green-600 text-white rounded-lg py-3 hover:bg-green-700 disabled:bg-gray-400"
+          className="w-full rounded-lg bg-green-600 py-3 font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-400"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+
       </form>
 
-      <p className="text-center mt-6 text-gray-500">
+      <p className="mt-6 text-center text-sm sm:text-base text-gray-500">
         Does not have an account?{" "}
         <Link
           href="/signup"
-          className="text-green-600 font-semibold hover:underline"
+          className="font-semibold text-green-600 hover:underline"
         >
           Sign Up
         </Link>
       </p>
+
     </div>
   );
 }
