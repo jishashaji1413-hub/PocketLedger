@@ -42,61 +42,77 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Top Bar */}
-      <div className="md:hidden flex items-center justify-between bg-slate-900 text-white px-4 py-4 shadow-md">
+      {/* Mobile Header */}
+      <header className="md:hidden fixed top-0 left-0 right-0 h-08 bg-slate-900 flex items-center justify-between px-4 z-50">
         <div className="flex items-center gap-2">
-          <Wallet size={28} className="text-green-400" />
-          <h1 className="text-xl font-bold">PocketLedger</h1>
+          <Wallet className="text-green-400" />
+          <span className="text-white font-bold">
+            PocketLedger
+          </span>
         </div>
 
-        <button onClick={() => setIsOpen(true)}>
-          <Menu size={28} />
+        <button
+          onClick={() => setIsOpen(true)}
+          className="text-white"
+        >
+          <Menu />
         </button>
-      </div>
+      </header>
 
       {/* Overlay */}
+
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
         />
       )}
 
       {/* Sidebar */}
+
       <aside
         className={`
-          fixed md:static
-          top-0 left-0
-          z-50
-          w-64
-          min-h-screen
-          bg-slate-900
-          text-white
-          p-6
-          transform
-          transition-transform
-          duration-300
-          ${
-            isOpen
-              ? "translate-x-0"
-              : "-translate-x-full md:translate-x-0"
-          }
-        `}
+        fixed
+        top-0
+        left-0
+        h-full
+        w-64
+        bg-slate-900
+        text-white
+        p-6
+        z-50
+        transform
+        transition-transform
+        duration-300
+
+        ${
+          isOpen
+            ? "translate-x-0"
+            : "-translate-x-full"
+        }
+
+        md:translate-x-0
+        md:static
+        md:flex-shrink-0
+      `}
       >
-        {/* Close Button */}
-        <div className="flex justify-end md:hidden mb-6">
+        <div className="flex justify-between items-center mb-8 md:hidden">
+          <h2 className="font-bold text-xl">
+            Menu
+          </h2>
+
           <button onClick={() => setIsOpen(false)}>
-            <X size={28} />
+            <X />
           </button>
         </div>
 
-        {/* Logo */}
-        <div className="flex items-center gap-2 mb-10">
-          <Wallet size={30} className="text-green-400" />
-          <h1 className="text-2xl font-bold">PocketLedger</h1>
+        <div className="hidden md:flex items-center gap-2 mb-10">
+          <Wallet className="text-green-400" />
+          <span className="font-bold text-xl">
+            PocketLedger
+          </span>
         </div>
 
-        {/* Navigation */}
         <nav className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -106,14 +122,14 @@ export default function Sidebar() {
                 key={item.title}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-3 rounded-lg p-3 transition-all duration-200 ${
+                className={`flex items-center gap-3 rounded-lg px-4 py-3 ${
                   pathname === item.href
-                    ? "bg-green-500 text-white"
+                    ? "bg-green-500"
                     : "hover:bg-slate-800"
                 }`}
               >
                 <Icon size={20} />
-                <span>{item.title}</span>
+                {item.title}
               </Link>
             );
           })}
